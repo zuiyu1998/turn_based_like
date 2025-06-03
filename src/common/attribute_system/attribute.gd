@@ -1,4 +1,4 @@
-class_name AttributeBase
+class_name Attribute
 extends Resource
 
 
@@ -27,6 +27,8 @@ var _base_value: float = 0.0
 # 当前属性值
 var _current_value: float = 0.0
 
+# 修改器列表
+var modifier_list: Array[AttributeModifier] = []
 
 func get_base_value() -> float:
     return _base_value
