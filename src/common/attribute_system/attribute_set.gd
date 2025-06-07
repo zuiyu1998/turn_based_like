@@ -7,38 +7,16 @@ extends Resource
 var _attributes: Dictionary[String, Attribute] = {}
 ## 属性是否初始化
 var initialized: bool = false
-
-
-func initialize_attribute_dependencies():
-	printerr("this is a virtual func")
-
-
-## 更改某一属性当前值之后的回调
-func after_current_value_change(_attribute: StringName, _old_v: float, _new_v: float) -> void:
-	printerr("this is a virtual func")
-
-
-## 更改某一属性当前值之前的回调
-func before_current_value_change(_attribute: StringName, _old_v: float, new_v: float) -> float:
-	printerr("this is a virtual func")
-	return new_v
-
-
-## 更改某一属性基础值之前的回调
-func before_base_value_change(_attribute_name: StringName, _old_v: float, new_v: float) -> float:
-	printerr("this is a virtual func")
-	return new_v
-
-
-## 更改某一属性基础值之后的回调
-func after_base_value_change(_attribute_name: StringName, _old_v: float, _new_v: float) -> void:
-	printerr("this is a virtual func")
+## 属性约束
+var constraint: AttributeSetConstraint = DefaultAttributeSetConstraint.new()
 
 
 func initialize() -> void:
 	if initialized:
 		return
-		
+	
+	constraint.attributes = _attributes;
+
 	_attributes.clear()
 
 	for initialized_attribute in initialized_attributes:
@@ -50,13 +28,13 @@ func initialize() -> void:
 	initialized = true
 
 	## 根据依赖关系初始化属性
-	initialize_attribute_dependencies()
+	constraint.initialize_attribute_dependencies()
 
 	## 初始化属性的修改器
 	for attribute: Attribute in _attributes.values():
 		var old_value = attribute.get_current_value()
 		var new_value = attribute.get_current_value()
-		var final_value = before_current_value_change(attribute.attribute_name, old_value, new_value)
+		var final_value = constraint.before_current_value_change(attribute.attribute_name, old_value, new_value)
 		attribute._current_value = final_value
 
 
@@ -86,7 +64,7 @@ func _remove_modifier(attribute_name: String, modifier: AttributeModifier):
 	var old_current_value = attr.get_current_value()
 	attr._remove_modifier(modifier)
 	var new_current_value = attr.get_current_value()
-	after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
+	constraint.after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
 
 
 func _add_modifier(attribute_name: String, modifier: AttributeModifier):
@@ -97,7 +75,7 @@ func _add_modifier(attribute_name: String, modifier: AttributeModifier):
 	var old_current_value = attr.get_current_value()
 	attr._add_modifier(modifier)
 	var new_current_value = attr.get_current_value()
-	after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
+	constraint.after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
 
 
 func set_current_value(attribute_name: String, current_value: float):
@@ -107,11 +85,11 @@ func set_current_value(attribute_name: String, current_value: float):
 	
 	var old_current_value = attr.get_current_value()
 
-	var final_value = before_current_value_change(attr.attribute_name, old_current_value, current_value)
+	var final_value = constraint.before_current_value_change(attr.attribute_name, old_current_value, current_value)
 	attr._current_value = final_value
 
 	var new_current_value = attr.get_current_value()
-	after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
+	constraint.after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
 	
 
 func set_base_value(attribute_name: String, base_value: float):
@@ -125,14 +103,14 @@ func set_base_value(attribute_name: String, base_value: float):
 		return
 
 	## 设置当前值的回调
-	var final_value = before_base_value_change(attr.attribute_name, old_base_value, base_value)
+	var final_value = constraint.before_base_value_change(attr.attribute_name, old_base_value, base_value)
 	attr._set_base_value(final_value)
 
 	var new_current_value = attr.get_current_value()
 
 	var new_base_value = attr.get_base_value()
 
-	after_base_value_change(attr.attribute_name, old_base_value, new_base_value)
+	constraint.after_base_value_change(attr.attribute_name, old_base_value, new_base_value)
 
 	if old_current_value != new_current_value:
 		set_current_value(attr.attribute_name, new_current_value)
