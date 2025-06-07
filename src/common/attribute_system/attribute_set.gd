@@ -56,7 +56,7 @@ func get_attribute_base_value(attribute_name: String) -> float:
 		return attr.get_base_value()
 
 
-func _remove_modifier(attribute_name: String, modifier: AttributeModifier):
+func remove_modifier(attribute_name: String, modifier: AttributeModifier):
 	var attr = get_attribute(attribute_name)
 	if not attr:
 		return
@@ -67,7 +67,7 @@ func _remove_modifier(attribute_name: String, modifier: AttributeModifier):
 	constraint.after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
 
 
-func _add_modifier(attribute_name: String, modifier: AttributeModifier):
+func add_modifier(attribute_name: String, modifier: AttributeModifier):
 	var attr = get_attribute(attribute_name)
 	if not attr:
 		return
@@ -86,7 +86,7 @@ func set_current_value(attribute_name: String, current_value: float):
 	var old_current_value = attr.get_current_value()
 
 	var final_value = constraint.before_current_value_change(attr.attribute_name, old_current_value, current_value)
-	attr._current_value = final_value
+	attr.current_value = final_value
 
 	var new_current_value = attr.get_current_value()
 	constraint.after_current_value_change(attr.attribute_name, old_current_value, new_current_value)
@@ -104,7 +104,7 @@ func set_base_value(attribute_name: String, base_value: float):
 
 	## 设置当前值的回调
 	var final_value = constraint.before_base_value_change(attr.attribute_name, old_base_value, base_value)
-	attr._set_base_value(final_value)
+	attr.set_base_value(final_value)
 
 	var new_current_value = attr.get_current_value()
 

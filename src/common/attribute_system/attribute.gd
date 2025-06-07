@@ -20,24 +20,24 @@ var base_value: float = 0.0
 
 
 # 当前属性值
-var _current_value: float = 0.0
+var current_value: float = 0.0
 
 # 修改器列表
 var _modifier_list: Array[AttributeModifier] = []
 
 
-func _set_base_value(v: float):
+func set_base_value(v: float):
 	base_value = v
 	_recalculate_current_value()
 
 
-func _add_modifier(modifier: AttributeModifier):
+func add_modifier(modifier: AttributeModifier):
 	if not modifier in _modifier_list:
 		_modifier_list.append(modifier)
 		_recalculate_current_value()
 
 
-func _remove_modifier(modifier: AttributeModifier):
+func remove_modifier(modifier: AttributeModifier):
 	if modifier in _modifier_list:
 		_modifier_list.erase(modifier)
 		_recalculate_current_value()
@@ -68,13 +68,13 @@ func _recalculate_current_value():
 	if not override_modifier:
 		override_modifier.apply(self)
 
-	var final_value = _current_value
+	var final_value = current_value
 
 	if not can_be_negative and final_value < 0.0:
 		final_value = 0.0
 	
 	final_value = clampf(final_value, min_value, max_value)
-	_current_value = final_value
+	current_value = final_value
 
 
 func get_base_value() -> float:
@@ -82,4 +82,4 @@ func get_base_value() -> float:
 
 
 func get_current_value() -> float:
-	return _current_value
+	return current_value
