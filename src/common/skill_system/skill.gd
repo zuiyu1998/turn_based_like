@@ -33,3 +33,15 @@ enum TargetType {
 @export var target_count: int = 0
 ## 技能限制器
 @export var constraint_set: SkillConstraintSet = SkillConstraintSet.new()
+## 技能效果数据
+@export var effct_datas: Array[SkillEffectData] = []
+
+
+## 是否可以执行
+func can_execute(attribute_set: AttributeSet) -> bool:
+    return constraint_set.can_execute(attribute_set)
+
+
+## 更新属性
+func update_attribute_set(attribute_set: AttributeSet) -> void:
+    constraint_set.update(attribute_set)
