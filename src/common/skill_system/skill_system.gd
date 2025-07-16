@@ -10,6 +10,8 @@ var effect_processors: Dictionary[String, EffectProcessor] = {}
 
 ## 注册技能效果处理器
 func register_effect_processor(processor: EffectProcessor) -> void:
+	print("register_effect_processor: %s", [processor.effct_type])
+
 	effect_processors[processor.effct_type] = processor
 
 
