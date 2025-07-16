@@ -7,6 +7,12 @@ extends RefCounted
 ## 效果处理器
 var effect_processors: Dictionary[String, EffectProcessor] = {}
 
+
+## 注册技能效果处理器
+func register_effect_processor(processor: EffectProcessor) -> void:
+	effect_processors[processor.effct_type] = processor
+
+
 ## 执行单个效果
 func _apply_single_effect(caster: SkillComponent, target: SkillComponent, effect: SkillEffectData) -> Dictionary:
 	var res = {}
@@ -34,13 +40,14 @@ func _process_skill_effects(caster: SkillComponent, skill: Skill, selected_targe
 				results[target][key] = effect_result[key]
 	return results
 
+
 ## 更改属性
-func _consume_caster(caster: SkillComponent, skill: Skill) -> void:
-	skill.update_attribute_set(caster.attribute_set)
+func _consume_attribute_set(caster: SkillComponent, skill: Skill) -> void:
+	skill.consume_attribute_set(caster.attribute_set)
 
 
 ## 验证技能是否可以释放
-func _verify_skill_is_executed(caster: SkillComponent, skill: Skill) -> bool:
+func verify_skill_can_execute(caster: SkillComponent, skill: Skill) -> bool:
 	## 验证释放者的属性
 	if not skill.can_execute(caster.attribute_set):
 		return false
@@ -50,11 +57,7 @@ func _verify_skill_is_executed(caster: SkillComponent, skill: Skill) -> bool:
 
 ## 执行技能
 func execute_skill(caster: SkillComponent, skill: Skill, selected_targets: Array[SkillComponent]) -> bool:
-	var executed = _verify_skill_is_executed(caster, skill)
-	if not executed:
-		return false
-
-	_consume_caster(caster, skill)
+	_consume_attribute_set(caster, skill)
 
 	_process_skill_effects(caster, skill, selected_targets)
 

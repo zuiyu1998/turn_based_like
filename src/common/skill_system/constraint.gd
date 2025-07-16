@@ -6,9 +6,9 @@ extends Resource
 
 ## 验证当前属性是否满足需求
 func can_execute(_attribute_set: AttributeSet) -> bool:
-    return true
+	return true
 
 
-## 这个限制器更新属性
-func update(_attribute_set: AttributeSet) -> void:
-    return
+## 限制器消费属性
+func consume(_attribute_set: AttributeSet) -> void:
+	return
